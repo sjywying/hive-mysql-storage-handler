@@ -50,7 +50,7 @@ public class JdbcInputFormat extends InputFormatWrapper {
             throw new PredicateMissingException();
         }
         JdbcSerDeHelper.setFilters(job);
-        ((org.apache.hadoop.mapreduce.lib.db.DBInputFormat) realInputFormat)
+        ((JdbcDBInputFormat) realInputFormat)
                 .setConf(job);
         return super.getRecordReader(split, job, reporter);
     }
@@ -60,7 +60,7 @@ public class JdbcInputFormat extends InputFormatWrapper {
             throws IOException {
         JdbcSerDeHelper.setFilters(job);
         job.setInt("mapred.map.tasks", numSplits);
-        ((org.apache.hadoop.mapreduce.lib.db.DBInputFormat) realInputFormat)
+        ((JdbcDBInputFormat) realInputFormat)
                 .setConf(job);
         return super.getSplits(job, numSplits);
 

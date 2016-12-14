@@ -87,6 +87,26 @@ public class JdbcDBInputFormat<T extends DBWritable>
           throw new RuntimeException(ex);
        }
     }
+
+    public void setConf(Configuration conf) {
+        super.dbConf = new DBConfiguration(conf);
+
+        try {
+            if(super.connection != null && super.connection.isClosed()) {
+                super.connection = null;
+            }
+            super.getConnection();
+            DatabaseMetaData dbMeta = super.connection.getMetaData();
+            super.dbProductName = dbMeta.getDatabaseProductName().toUpperCase();
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+
+        super.tableName = super.dbConf.getInputTableName();
+        super.fieldNames = super.dbConf.getInputFieldNames();
+        super.conditions = super.dbConf.getInputConditions();
+    }
     
     @Override
     public RecordReader<LongWritable, T> createRecordReader(InputSplit split,
