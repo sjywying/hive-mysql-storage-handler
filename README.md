@@ -1,6 +1,8 @@
 # hive-mysql-storage-handler
 hive-mysql-storage-handler
 
+后续会对此代码进行简化
+
 
 注意点：
     1. 部署hive的节点和所有的DataNode节点需要授予数据库访问权限，由于此代码吞掉了部分异常信息造成排查困难。
