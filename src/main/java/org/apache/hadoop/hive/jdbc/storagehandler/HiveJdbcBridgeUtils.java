@@ -20,6 +20,7 @@ package org.apache.hadoop.hive.jdbc.storagehandler;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -28,97 +29,30 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.serde2.SerDeException;
 import org.apache.hadoop.hive.serde2.objectinspector.ListObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorFactory;
 import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
 import org.apache.hive.jdbc.JdbcColumn;
 
 public class HiveJdbcBridgeUtils {
+
+	private static final Log LOG = LogFactory.getLog(HiveJdbcBridgeUtils.class);
 
 	public static int[] hiveTypesToSqlTypes(String[] hiveTypes)
 			throws SQLException {
 		final int[] result = new int[hiveTypes.length];
 		for (int i = 0; i < hiveTypes.length; i++) {
-			result[i] = JdbcColumn.hiveTypeToSqlType(hiveTypes[i]);
+			if(hiveTypes[i].startsWith("decimal")) {
+				result[i] = JdbcColumn.hiveTypeToSqlType("decimal");
+			} else {
+				result[i] = JdbcColumn.hiveTypeToSqlType(hiveTypes[i]);
+			}
 		}
 		return result;
-	}
-
-	/**
-	 * @see org.apache.hadoop.hive.jdbc.Utils#hiveTypeToSqlType(String)
-	 */
-//	private static int hiveTypeToSqlType(String hiveType) throws SerDeException {
-//		final String lctype = hiveType.toLowerCase();
-//		if ("string".equals(lctype)) {
-//			return Types.VARCHAR;
-//		} else if ("float".equals(lctype)) {
-//			return Types.FLOAT;
-//		} else if ("double".equals(lctype)) {
-//			return Types.DOUBLE;
-//		} else if ("boolean".equals(lctype)) {
-//			return Types.BOOLEAN;
-//		} else if ("tinyint".equals(lctype)) {
-//			return Types.TINYINT;
-//		} else if ("smallint".equals(lctype)) {
-//			return Types.SMALLINT;
-//		} else if ("int".equals(lctype)) {
-//			return Types.INTEGER;
-//		} else if ("bigint".equals(lctype)) {
-//			return Types.BIGINT;
-//		} else if ("timestamp".equals(lctype)) {
-//			return Types.TIMESTAMP;
-//		}else if ("date".equals(lctype)) {
-//			return Types.DATE;
-//		} else if ("binary".equals(lctype)) {
-//			return Types.BINARY;
-//		} else if (lctype.startsWith("array<")) {
-//			return Types.ARRAY;
-//		}
-//		throw new SerDeException("Unrecognized column type: " + hiveType);
-//	}
-
-
-
-	public static ObjectInspector getObjectInspector(int sqlType,
-			String hiveType) throws SQLException {
-		switch (sqlType) {
-		case Types.VARCHAR:
-			return PrimitiveObjectInspectorFactory.javaStringObjectInspector;
-		case Types.FLOAT:
-			return PrimitiveObjectInspectorFactory.javaFloatObjectInspector;
-		case Types.DOUBLE:
-			return PrimitiveObjectInspectorFactory.javaDoubleObjectInspector;
-		case Types.BOOLEAN:
-			return PrimitiveObjectInspectorFactory.javaBooleanObjectInspector;
-		case Types.TINYINT:
-			return PrimitiveObjectInspectorFactory.javaByteObjectInspector;
-		case Types.SMALLINT:
-			return PrimitiveObjectInspectorFactory.javaShortObjectInspector;
-		case Types.INTEGER:
-			return PrimitiveObjectInspectorFactory.javaIntObjectInspector;
-		case Types.BIGINT:
-			return PrimitiveObjectInspectorFactory.javaLongObjectInspector;
-		case Types.TIMESTAMP:
-			return PrimitiveObjectInspectorFactory.javaTimestampObjectInspector;
-		case Types.DATE:
-			return PrimitiveObjectInspectorFactory.javaDateObjectInspector;
-		case Types.BINARY:
-			return PrimitiveObjectInspectorFactory.javaByteArrayObjectInspector;
-		case Types.ARRAY:
-			String hiveElemType = hiveType.substring(hiveType.indexOf('<') + 1,
-					hiveType.indexOf('>')).trim();
-			int sqlElemType = JdbcColumn.hiveTypeToSqlType(hiveElemType);
-			ObjectInspector listElementOI = getObjectInspector(sqlElemType,
-					hiveElemType);
-			return ObjectInspectorFactory
-					.getStandardListObjectInspector(listElementOI);
-		default:
-			throw new SQLException("Cannot find getObjectInspecto for: "
-					+ hiveType);
-		}
 	}
 
 	public static Object deparseObject(Object field, ObjectInspector fieldOI)
@@ -162,7 +96,7 @@ public class HiveJdbcBridgeUtils {
 		case Types.INTEGER:
 			return Integer.valueOf(in.readInt());
 		case Types.BIGINT:
-			return Long.valueOf(in.readLong());
+			return Long.valueOf(in.readLong()) ;
 		case Types.TIMESTAMP: {
 			long time = in.readLong();
 			return new Timestamp(time);

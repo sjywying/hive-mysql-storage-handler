@@ -23,37 +23,38 @@ public class ConfigurationUtil {
 			DBConfiguration.INPUT_FIELD_NAMES_PROPERTY,
 
 			DBConfiguration.OUTPUT_TABLE_NAME_PROPERTY,
-			DBConfiguration.OUTPUT_FIELD_NAMES_PROPERTY,
+			DBConfiguration.OUTPUT_FIELD_NAMES_PROPERTY
 
-			DB_USERNAME, DB_PASSWORD, TABLE_NAME, COLUMN_MAPPING, COLUMN_IGNORED, COLUMN_SUM);
+//			DB_USERNAME, DB_PASSWORD, TABLE_NAME, COLUMN_MAPPING, COLUMN_IGNORED, COLUMN_SUM
+	);
 
-	public final static String getDBUrl(Configuration conf){
-		return conf.get(DB_URL);
-	}
-	
-	public final static String getDBUserName(Configuration conf) {
-		return conf.get(DB_USERNAME);
-	}
-
-	public final static String getDBPassword(Configuration conf) {
-		return conf.get(DB_PASSWORD);
-	}
-
-	public final static String getTableName(Configuration conf) {
-		return conf.get(TABLE_NAME);
-	}
-
-	public final static String getColumnMapping(Configuration conf) {
-		return conf.get(COLUMN_MAPPING);
-	}
-
-	public final static String getColumnIgnored(Configuration conf) {
-		return conf.get(COLUMN_IGNORED);
-	}
-	
-	public final static String getColumnSum(Configuration conf) {
-		return conf.get(COLUMN_SUM);
-	}
+//	public final static String getDBUrl(Configuration conf){
+//		return conf.get(DB_URL);
+//	}
+//
+//	public final static String getDBUserName(Configuration conf) {
+//		return conf.get(DB_USERNAME);
+//	}
+//
+//	public final static String getDBPassword(Configuration conf) {
+//		return conf.get(DB_PASSWORD);
+//	}
+//
+//	public final static String getTableName(Configuration conf) {
+//		return conf.get(TABLE_NAME);
+//	}
+//
+//	public final static String getColumnMapping(Configuration conf) {
+//		return conf.get(COLUMN_MAPPING);
+//	}
+//
+//	public final static String getColumnIgnored(Configuration conf) {
+//		return conf.get(COLUMN_IGNORED);
+//	}
+//
+//	public final static String getColumnSum(Configuration conf) {
+//		return conf.get(COLUMN_SUM);
+//	}
 	
 	public static void copyMySQLProperties(Properties from,
 			Map<String, String> to) {

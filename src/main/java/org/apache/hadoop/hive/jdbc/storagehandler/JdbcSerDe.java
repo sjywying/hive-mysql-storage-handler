@@ -24,13 +24,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.serde2.AbstractSerDe;
-import org.apache.hadoop.hive.serde2.SerDe;
 import org.apache.hadoop.hive.serde2.SerDeException;
 import org.apache.hadoop.hive.serde2.SerDeStats;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorFactory;
 import org.apache.hadoop.hive.serde2.objectinspector.StructField;
 import org.apache.hadoop.hive.serde2.objectinspector.StructObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
 import org.apache.hadoop.io.Writable;
 import java.sql.*;
 
@@ -88,11 +89,10 @@ public class JdbcSerDe extends AbstractSerDe {
             this.cachedWritable = new DbRecordWritable(types);
             this.fieldCount = types.length;
 
-            fieldOIs = new ArrayList<ObjectInspector>(
-                    columnTypes.length);
+            fieldOIs = new ArrayList<ObjectInspector>(columnTypes.length);
             for (int i = 0; i < types.length; i++) {
-                ObjectInspector oi = HiveJdbcBridgeUtils.getObjectInspector(
-                        types[i], columnTypes[i]);
+                ObjectInspector oi = PrimitiveObjectInspectorFactory.getPrimitiveJavaObjectInspector(
+                        TypeInfoFactory.getPrimitiveTypeInfo(columnTypes[i]));
                 fieldOIs.add(oi);
             }
         } catch (SQLException e) {
