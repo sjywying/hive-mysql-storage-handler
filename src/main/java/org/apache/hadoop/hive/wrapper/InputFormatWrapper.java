@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.hadoop.mapreduce.InputFormat;
+import org.apache.hadoop.mapreduce.MRJobConfig;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
 import org.apache.commons.logging.Log;
@@ -70,7 +71,7 @@ public class InputFormatWrapper<K, V> implements
     {
         if(job.get(Constants.LAZY_SPLIT) !=null &&
                 (job.get(Constants.LAZY_SPLIT)).toUpperCase().equals("TRUE") ) {
-            int chunks = job.getInt("mapred.map.tasks", 1);
+            int chunks = job.getInt(MRJobConfig.NUM_MAPS, 1);
             splits = new ArrayList<org.apache.hadoop.mapreduce.InputSplit>();
             for (int i = 0; i < chunks; i++) {
                 DBInputSplit split;
@@ -79,7 +80,8 @@ public class InputFormatWrapper<K, V> implements
             }
         }
         else{
-                splits = realInputFormat.getSplits(taskContext);
+            taskContext.getConfiguration().setInt(MRJobConfig.NUM_MAPS, 1);
+            splits = realInputFormat.getSplits(taskContext);
         }
         return splits;
     }

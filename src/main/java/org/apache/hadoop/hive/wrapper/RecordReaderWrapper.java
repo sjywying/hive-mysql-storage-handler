@@ -23,6 +23,7 @@ import org.apache.hadoop.mapred.InputSplit;
 import org.apache.hadoop.mapred.FileSplit;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.Reporter;
+import org.apache.hadoop.mapreduce.MRJobConfig;
 import org.apache.hadoop.mapreduce.lib.db.DBConfiguration;
 
 import org.apache.hadoop.mapreduce.InputFormat;
@@ -83,7 +84,7 @@ public class RecordReaderWrapper<K, V> implements RecordReader<K, V> {
                 results.next();
 
                 count = results.getLong(1);
-                chunks = oldJobConf.getInt("mapred.map.tasks", 1);
+                chunks = oldJobConf.getInt(MRJobConfig.NUM_MAPS, 1);
                 LOG.info("Total numer of records: " + count + ". Total number of mappers: " + chunks );
                 splitLen = count/chunks;
                 if((count%chunks) != 0)

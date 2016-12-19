@@ -26,6 +26,7 @@ import org.apache.hadoop.mapred.InputSplit;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.RecordReader;
 import org.apache.hadoop.mapred.Reporter;
+import org.apache.hadoop.mapreduce.MRJobConfig;
 import org.apache.hadoop.mapreduce.lib.db.DBInputFormat;
 import org.apache.hadoop.hive.ql.plan.TableScanDesc;
 
@@ -59,9 +60,9 @@ public class JdbcInputFormat extends InputFormatWrapper {
     public InputSplit[] getSplits(JobConf job, int numSplits)
             throws IOException {
         JdbcSerDeHelper.setFilters(job);
-        job.setInt("mapred.map.tasks", numSplits);
-        ((JdbcDBInputFormat) realInputFormat)
-                .setConf(job);
+//        job.setInt("mapred.map.tasks", numSplits);
+        job.setInt(MRJobConfig.NUM_MAPS, numSplits);
+        ((JdbcDBInputFormat) realInputFormat).setConf(job);
         return super.getSplits(job, numSplits);
 
     }

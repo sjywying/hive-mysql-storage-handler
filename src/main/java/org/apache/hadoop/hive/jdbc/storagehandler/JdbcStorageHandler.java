@@ -51,6 +51,7 @@ import org.apache.hadoop.hive.ql.plan.TableScanDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeDescUtils;
 import org.apache.hadoop.hive.ql.plan.ExprNodeGenericFuncDesc;
+import org.apache.hadoop.mapreduce.MRJobConfig;
 
 /**
  * -- required settings set mapred.jdbc.driver.class=..; set mapred.jdbc.url=..;
@@ -153,6 +154,8 @@ public class JdbcStorageHandler extends DefaultStorageHandler implements
         jobProperties
                 .put(org.apache.hadoop.mapreduce.lib.db.DBConfiguration.OUTPUT_FIELD_NAMES_PROPERTY,
                         columnNames);
+
+        jobProperties.put(MRJobConfig.NUM_MAPS, "3");
 
         for (String key : tblProps.stringPropertyNames()) {
             if (key.startsWith("mapred.jdbc.")) {
